@@ -1,0 +1,52 @@
+<html>
+	<head>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+			integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
+			crossorigin="anonymous"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://unpkg.com/sakura.css/css/sakura.css"
+			type="text/css"
+        />
+	</head>
+	<body>
+		<h1>Fake downloads on NPM</h1>
+		<hr />
+		<br />
+		<img src="/images/npm-logo-red.png" alt="NPM Logo." />
+
+		<h2>How do the download counts on NPM work?</h2>
+		<p>
+			<a
+				href="https://blog.npmjs.org/post/92574016600/numeric-precision-matters-how-npm-download-counts-work"
+				>Every HTTP 200 response served that are tarballs is counted as a download.</a
+            > NPM themselves states <blockquote>"Bot filtering is really hard, and never totally accurate, and requires constant manual intervention or crazy machine learning to get right, and we are not an analytics company."</blockquote> 
+            NPM <b>does not</b> filter any bots <b>at all</b> from the download count. 
+        </p>
+        <h2>Why is this an issue?</h2>
+        <p>
+            I've spoken to end-users of NPM packages, and I found that for most of them, they would trust a package with more downloads than one with less. 
+            This seems fairly rational to me, as to most people, more downloads = more users, which equals more reliability. 
+            By having someone being able to fake millions of downloads in only a few minutes, having a download counter almost doesn't make sense.
+            To demonstrate this point, I took a small package I created about two weeks before, and ran a simple script that faked my download counts. <a href="https://www.npmjs.com/package/js-adler">
+            This is the package.</a> (It's a small package implementing Adler32 into Javascript, mainly meant for internal usage.) In fifteen minutes, the download counts were at over a million. Obviously, this is fake.
+            (The package normally gets 4-5 downloads a week.) 
+            <br><br>
+            I implore NPM to do something about this, or at least remove the download count from publicly facing NPM pages.
+        <h2>Want to try it yourself?</h2>
+        <p>I made a small webapp as a proof of concept for this idea. I don't recommend actually using it as it could put a strain on NPM servers. 
+            It's very rudimentary and I'm sure somebody could optimize the process if they put their minds to it.
+            <br><button onclick="window.location.href='/apps/fakedl.html'">Web App</button>
+            <br>
+            <br><button onclick="window.location.href='/index.html'">Main page</button>
+        </p>
+
+        </p>
+        <div class="footer">
+            <p><a href="https://github.com/twotxh">Made with 💖 by twotxh</a></p>
+        </div>
+	</body>
+</html>
