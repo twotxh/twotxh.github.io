@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.0/axios.min.js"
+	integrity="sha512-DZqqY3PiOvTP9HkjIWgjO6ouCbq+dxqWoJZ/Q+zPYNHmlnI2dQnbJ5bxAHpAMw+LXRm4D72EIRXzvcHQtE8/VQ=="
+	crossorigin="anonymous"
+></script>
+<style>
+	.content {
+		max-width: 500px;
+		margin: auto;
+		text-align: center;
+	}
+	.footer {
+		left: 0;
+		bottom: 0;
+		width: 100%;
+	}
+</style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link
+	rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+	integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
+	crossorigin="anonymous"
+/>
+<link
+	rel="stylesheet"
+	href="https://unpkg.com/sakura.css/css/sakura.css"
+	type="text/css"
+/>
+<meta charset="UTF-8" />
+<title>Simple XKCD Parser</title>
+
+<body>
+	<script>
+		async function main() {
+			await axios
+				.get("https://xkcd.now.sh/?comic=latest")
+				.then(function (response) {
+					window.xkcdnum = response.data.num;
+				});
+			await axios
+				.get(
+					"https://xkcd.now.sh?comic=" +
+						Math.floor(Math.random() * (window.xkcdnum - 1) + 1)
+				)
+				.then(function (response) {
+					var img = document.createElement("img");
+					img.src = response.data.img;
+					img.title = response.data.alt;
+					var src = document.getElementById("img");
+					src.appendChild(img);
+					if (document.getElementById("comnum").checked) {
+						var comicnumber = document.createElement("p");
+						comicnumber.innerHTML = response.data.num.toString();
+						src.appendChild(comicnumber);
+					}
+					if (document.getElementById("comlink").checked) {
+						var comiclink = document.createElement("a");
+						comiclink.setAttribute(
+							"href",
+							"https://xkcd.com/" + response.data.num.toString()
+						);
+						comiclink.innerHTML =
+							"https://xkcd.com/" + response.data.num.toString();
+						src.appendChild(comiclink);
+					}
+				});
+		}
+	</script>
+	<div class="content">
+		<label for="comnum"
+			>Display XKCD comic numbers?
+			<input type="checkbox" id="comnum" name="comnum" value="comnum" /> <br />
+		</label>
+		<label for="comlink"
+			>Display XKCD comic links?
+			<input type="checkbox" id="comlink" name="comlink" value="comlink" />
+			<br />
+		</label>
+		<input
+			type="button"
+			onclick="main()"
+			value="Random XKCD comic"
+			id="button"
+		/>
+
+		<div id="img"></div>
+		<div class="footer">
+			<p><a href="https://github.com/twotxh">Made with 💖 by twotxh</a></p>
+			<p>
+				All credits for comics go to Randall Munroe at
+				<a href="https://xkcd.com">XKCD</a>
+			</p>
+		</div>
+	</div>
+</body>

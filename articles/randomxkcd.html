@@ -1,0 +1,45 @@
+<html>
+	<head>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+			integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
+			crossorigin="anonymous"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://unpkg.com/sakura.css/css/sakura.css"
+			type="text/css"
+        />
+	</head>
+	<body>
+		<h1>A simple XKCD Parser for random comics</h1>
+		<hr />
+		<br />
+        <img src="/images/xkcd.png" alt="XKCD logo." />
+        <h2>Why?</h2>
+        <p>
+            I love XKCD. It's my favourite webcomic. I've bought all of Randall Munroe's books, and they sit on a proud spot on the top of my bookshelf, but often I find it annoying to click the next or random button, especially if the image changes sizes. It's just not a good format for me to read.
+            That's why I created this.
+        </p>
+        <hr>
+        <h2>Technical aspects</h2>
+        <p>This project didn't take that long, but I ran into one monumental challenge. CORS. While XKCD does have a wonderful API, it is not CORS enabled. I either had to abandon the project or use a CORS proxy.
+            My first choice was cors-anywhere. It's a wonderful service that allows you to bypass CORS. However, it didn't fit this projects needs. I continously got rate limited after ~1 minute of testing (about 10 requests).
+            I don't intend to blame cors-anywhere for this, their decision for rate limits was rational. However, I needed a better service for this project. That's when I stumbled upon <a href="https://github.com/mrmartineau/xkcd-api">xkcd.now.sh.</a>
+            This service is a direct mirror of the XKCD API with one change: CORS was enabled. I quickly integrated it into the web app, and it worked perfectly.
+
+            You can test it out below.
+        </p>
+		
+            <br><button onclick="window.location.href='/apps/randomxkcd.html'">Web App</button>
+            <br>
+            <br><button onclick="window.location.href='/index.html'">Main page</button>
+        </p>
+
+        </p>
+        <div class="footer">
+            <p><a href="https://github.com/twotxh">Made with 💖 by twotxh</a></p>
+        </div>
+	</body>
+</html>
