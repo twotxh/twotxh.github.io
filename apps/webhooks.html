@@ -1,74 +1,76 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<script src="https://rawcdn.githack.com/discordjs/discord.js/cd9267458f1ba07a30ad7841ca4bc3aa4e9c4878/discord.master.min.js"></script>
-		<script>
-			function con1() {
-				var url = document
-					.getElementById("url")
-					.value.replace("https://discord.com/api/webhooks/", "");
-				var urlarr = url.split("/");
-				const webhookClient = new Discord.WebhookClient(urlarr[0], urlarr[1]);
-				webhookClient.send(document.getElementById("msg").value);
-				document.getElementById("msg").value = "";
-			}
-		</script>
-		<link
-			rel="stylesheet"
-			href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
-			integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
-			crossorigin="anonymous"
-		/>
-		<link
-			rel="stylesheet"
-			href="https://unpkg.com/sakura.css/css/sakura.css"
-			type="text/css"
-		/>
-		<style>
-			.footer {
-				position: fixed;
-				left: 0;
-				bottom: 0;
-				width: 100%;
-				text-align: center;
-			}
-			body {
-				text-align: center;
-			}
-		</style>
-		<meta charset="UTF-8" />
-		<title>Discord Webhook Sender</title>
-	</head>
-	<body>
-		<h1 class="h1">Hello!</h1>
-		<p class="main">Please click the button to send your webhook a message.</p>
-		<input
-			type="text"
-			id="url"
-			placeholder="Your webhook URL here..."
-			size="70"
-		/>
-		<br />
-		<input type="text" id="msg" placeholder="Your message here..." size="70" />
-		<br />
-		<input type="button" onclick="con1()" value="Send" id="button" />
-		<p class="main" id="main2"></p>
-		<div class="footer">
-			<p><a href="https://github.com/twotxh">Made with 💖 by twotxh</a></p>
-		</div>
-	</body>
-	<script>
-		document.getElementById("msg").addEventListener("keyup", function (event) {
-			event.preventDefault();
-			if (event.keyCode === 13) {
-				document.getElementById("button").click();
-			}
-		});
-		document.getElementById("url").addEventListener("keyup", function (event) {
-			event.preventDefault();
-			if (event.keyCode === 13) {
-				document.getElementById("button").click();
-			}
-		});
-	</script>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script src="https://rawcdn.githack.com/discordjs/discord.js/cd9267458f1ba07a30ad7841ca4bc3aa4e9c4878/discord.master.min.js"></script>
+    <script>
+      function con1() {
+        var url = document
+          .getElementById("url")
+          .value.replace("https://discord.com/api/webhooks/", "");
+        var urlarr = url.split("/");
+        const webhookClient = new Discord.WebhookClient(urlarr[0], urlarr[1]);
+        webhookClient.send(document.getElementById("msg").value);
+        document.getElementById("msg").value = "";
+      }
+    </script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+      integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/sakura.css/css/sakura.css"
+      type="text/css"
+    />
+    <style>
+      .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+      }
+      body {
+        text-align: center;
+      }
+    </style>
+    <meta charset="UTF-8" />
+    <title>Discord Webhook Sender</title>
+  </head>
+  <body>
+    <h1 class="h1">Hello!</h1>
+    <p class="main">Please click the button to send your webhook a message.</p>
+    <input
+      type="text"
+      id="url"
+      placeholder="Your webhook URL here..."
+      size="70"
+    />
+    <br />
+    <input type="text" id="msg" placeholder="Your message here..." size="70" />
+    <br />
+    <input type="button" onclick="con1()" value="Send" id="button" />
+    <p class="main" id="main2"></p>
+    <div class="footer">
+      <p><a href="https://github.com/twotxh">Made with 💖 by twotxh</a></p>
+    </div>
+  </body>
+  <script>
+    document.getElementById("msg").addEventListener("keyup", function (event) {
+      event.preventDefault();
+      if (event.keyCode === 13) {
+        document.getElementById("button").click();
+      }
+    });
+    document.getElementById("url").addEventListener("keyup", function (event) {
+      event.preventDefault();
+      if (event.keyCode === 13) {
+        document.getElementById("button").click();
+      }
+    });
+  </script>
 </html>

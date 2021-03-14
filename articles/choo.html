@@ -1,0 +1,130 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.6.0/styles/default.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.6.0/highlight.min.js"></script>
+    <script>
+      hljs.highlightAll();
+    </script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+      integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/sakura.css/css/sakura.css"
+      type="text/css"
+    />
+  </head>
+
+  <body>
+    <h1>Choo Choo: An adventure in Discord bots.</h1>
+    <hr />
+    <br />
+    <img
+      src="../images/jason-sung-3sTVJzO85KE-unsplash.jpg"
+      title="A rusty train (get it?)"
+    />
+    <h2>What is Choo Choo?</h2>
+    <p>
+      Choo Choo is a project I've worked on for a while. It's a bot that uses
+      <a href="https://en.wikipedia.org/wiki/Markov_chain">Markov chains</a> to
+      generate semi-complete sentences from a provided dataset.
+    </p>
+    <h2>Wait, what dataset?</h2>
+    <p>
+      I run choo choo on a Discord server, and with permission of the server
+      owner, I used the excellent tool of
+      <a href="https://github.com/Tyrrrz/DiscordChatExporter"
+        >Discord Chat Exporter</a
+      >
+      to export all the servers' channels in plaintext.
+    </p>
+    <h3>Our first issue</h3>
+    <p>
+      While an excellent tool, DiscordChatExporter was built to be human
+      readable. The Plaintext option was of course helpful, but it outputted
+      text like: <pre><code class="plaintext">==============================================================
+Guild: Server Name
+Channel: Main Channels / test
+==============================================================
+
+[13-Mar-21 07:08 PM] vstp#4582
+Test
+{Embed}
+https://embedlink.com
+
+==============================================================
+Exported 1 message(s)
+==============================================================</code></pre>
+This was not ideal for our purposes (The output with this dataset would be full of "=" and "{" signs and dates and usernames, none of which we want.)
+It was clear I needed a way to get rid of these without going through 140,000 messages manually.
+This was my solution.
+<pre><code class="sh">sed '/^\[/d' $1 > /tmp/txt1
+sed '/^{/d' /tmp/txt1 > /tmp/txt2
+sed '/^$/d' /tmp/txt2 > /tmp/txt3
+head -n -4 /tmp/txt3 > $1
+rm /tmp/txt1
+rm /tmp/txt2
+rm /tmp/txt3</code></pre>
+This script removed all lines that started with {, [, or $ and then removed the first four lines from the text.
+This was pretty much the best I could get without manually editing the files.
+    </p>
+<h2>The code</h2>
+<p>
+I wrote Choo Choo in Rust, using the incredibly helpful <a href="https://github.com/serenity-rs/serenity">Serenity</a> library to communicate with Discord.
+<pre><code>async fn message(&self, ctx: Context, msg: Message) {
+        if (msg.author.bot) {
+            return;
+        }
+        if msg.channel_id != 799350790476922910 {
+            return;
+        }
+        let cache = markov::create_cache(include_str!("./log.txt")
+        .split_whitespace()
+        .map(|x| String::from(x))
+        .collect());
+        if let Err(why) = msg
+            .channel_id
+            .say(&ctx.http, markov::generate_text(cache, 10))
+            .await
+        {
+            println!("Error sending message: {:?}", why);
+        }
+    }</code></pre> This was the first draft. It was horribly inefficient for two main reasons.
+The cache was regenerated on every new message, and the tokens were regenerated on every new message.
+My first thought was to offload the cache creation to static variables, but since it required function calls to non-static functions, 
+that wasn't an option. Except, one day, I stumbled across <a href="https://docs.rs/lazy_static/1.4.0/lazy_static/">lazy_static</a>.
+By moving both the token and cache creation to a setup like this: <pre><code class="rust">lazy_static! {
+    static ref TOKENS: Vec<String> = include_str!("../all.txt")
+        .split_whitespace()
+        .map(|x| String::from(x))
+        .collect();
+    pub static ref CACHE: std::collections::HashMap<std::string::String, std::vec::Vec<std::string::String>> =
+        markov::create_cache(TOKENS.to_vec());
+}</code></pre> To get this to work, I had to have the markov implementation import the struct of CACHE and accept that instead of the previously accepted HashMap.
+<h2>The results</h2>
+The results, while not perfect, are fairly good considering the speed the program runs at. On my home internet connection of ~250 Mbps and an i5-3230M @ 2.6 GHz, the program takes ~100ms to respond.
+Some sample messages from the bot are provided below, seperated by a new line:
+<pre><code class="plaintext">
+livestream is something achieved by ethical means? fuck ethical means
+Your memories, your past. How many words could you justify
+:boot: :man_standing: okay let’s make our social services High taxes
+:eyes: :eyes:? https://tenor.com/view/chika-anime-cute-screams-gif-15192149 https://tenor.com/view/chika-anime-cute-screams-gif-15192149 https://media.tenor.co/images/9223d0167492393b85681f0e11107cc1/tenor.png I’m very annoyed that he
+there's normal tea, and there's no class? yeah i hate
+villian who runs soccer-focused Instagram account @433 edit: :relaxed: https://i.ytimg.com/vi/zGl796352RI/hqdefault.jpg
+probably immortality Immortality sucks ass まお Yeah ik japan noisesà
+</code></pre>
+I'm still looking for optimizations, and I'll keep this page updated. <br>
+
+</p>
+    <div class="footer">
+      <p><a href="https://github.com/twotxh">Made with 💖 by twotxh (Article current as of 2021)</a></p>
+    </div>
+  </body>
+</html>
